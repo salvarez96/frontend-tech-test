@@ -21,6 +21,8 @@ export class Cryptography {
 
   static async decrypt(session: string | undefined = '') {
     try {
+      if (!session) return null
+
       const { payload } = await jwtVerify(session, Cryptography.ENCODED_KEY, {
         algorithms: ['HS256'],
       })

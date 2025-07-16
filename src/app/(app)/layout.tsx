@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
+import { ToastContainer } from "react-toastify";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,6 +32,7 @@ export default function RootLayout({
         <Header />
         <main className="lg:mx-auto mx-5 lg:mt-15 mt-10 max-w-5xl">
           {children}
+          <ToastContainer />
         </main>
       </body>
     </html>

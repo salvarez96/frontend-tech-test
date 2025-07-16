@@ -1,4 +1,5 @@
 import { verifySession } from "@/lib/dal"
+import { EditProductFormSchema, EditProductFormState, FetchResponse, ProductFormFieldErrors } from "@/lib/definitions"
 import axios from "axios"
 
 export interface Product {
@@ -13,10 +14,12 @@ export interface Product {
 export class FakeApiService {
   private static FAKE_STORE_PRODUCTS_URL = process.env.NEXT_PUBLIC_FAKE_STORE_API + '/products'
 
-  static async getProducts(): Promise<Product[]> {
+  static async getProducts(): Promise<Product[] | null> {
     try {
-      await verifySession()
-      const response = await axios.get(this.FAKE_STORE_PRODUCTS_URL)
+      const session = await verifySession()
+      if (!session.isAuth) return null
+
+      const response = await axios.get(FakeApiService.FAKE_STORE_PRODUCTS_URL)
       return response.data
     } catch (error) {
       console.error(`Error al traer los productos:`, error)
@@ -24,10 +27,12 @@ export class FakeApiService {
     }
   }
 
-  static async getProduct(id: number): Promise<Product> {
+  static async getProduct(id: number): Promise<Product | null> {
     try {
-      await verifySession()
-      const response = await axios.get(this.FAKE_STORE_PRODUCTS_URL + `/${id}`)
+      const session = await verifySession()
+      if (!session.isAuth) return null
+
+      const response = await axios.get(FakeApiService.FAKE_STORE_PRODUCTS_URL + `/${id}`)
       return response.data as Product
     } catch (error) {
       console.error(`Error al traer el producto ${id}:`, error)
@@ -35,21 +40,93 @@ export class FakeApiService {
     }
   }
 
-  static async editProduct(product: Product): Promise<Product> {
+  static async editProduct(state: EditProductFormState, formData: FormData): Promise<FetchResponse<ProductFormFieldErrors, Product>> {
     try {
-      await verifySession()
-      const response = await axios.post(this.FAKE_STORE_PRODUCTS_URL, product)
-      return response.data
+      const session = await verifySession()
+      if (!session.isAuth) return { success: false, message: 'Session expired' }
+
+      const validatedFields = EditProductFormSchema.safeParse({
+        title: formData.get('title'),
+        category: formData.get('category'),
+        price: formData.get('price'),
+        description: formData.get('description'),
+        image: formData.get('image'),
+      })
+
+      if (!validatedFields.success) {
+        return {
+          success: false,
+          message: 'Error de validación, verificar los datos ingresados',
+          errors: validatedFields.error.flatten().fieldErrors
+        }
+      }
+
+      if (validatedFields.data && !validatedFields.data.image) {
+        validatedFields.data.image = 'https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg'
+      }
+
+      const response = await axios.put(`${FakeApiService.FAKE_STORE_PRODUCTS_URL}/${formData.get('id')}`, validatedFields.data)
+
+      return {
+        success: true,
+        message: `Producto ${response.data.title} editado con éxito!`,
+        data: response.data
+      }
     } catch (error) {
-      console.error(`Error al traer crear el producto:`, error)
-      throw error
+      console.error(`Error al editar el producto:`, error)
+      return {
+        success: false,
+        message: `An error has ocurred when editing the product: ${error}`,
+      }
+    }
+  }
+  static async createProduct(state: EditProductFormState, formData: FormData): Promise<FetchResponse<ProductFormFieldErrors, Product>> {
+    try {
+      const session = await verifySession()
+      if (!session.isAuth) return { success: false, message: 'Session expired' }
+
+      const validatedFields = EditProductFormSchema.safeParse({
+        title: formData.get('title'),
+        category: formData.get('category'),
+        price: formData.get('price'),
+        description: formData.get('description'),
+        image: formData.get('image'),
+      })
+
+      if (!validatedFields.success) {
+        return {
+          success: false,
+          message: 'Validation error',
+          errors: validatedFields.error.flatten().fieldErrors
+        }
+      }
+
+      if (validatedFields.data && !validatedFields.data.image) {
+        validatedFields.data.image = 'https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg'
+      }
+
+      const response = await axios.post(FakeApiService.FAKE_STORE_PRODUCTS_URL, validatedFields.data)
+
+      return {
+        success: true,
+        message: 'Product successfully created',
+        data: response.data
+      }
+    } catch (error) {
+      console.error(`Error al crear el producto:`, error)
+      return {
+        success: false,
+        message: `An error has ocurred when creating the product: ${error}`,
+      }
     }
   }
 
-  static async deleteProduct(id: number): Promise<Product> {
+  static async deleteProduct(id: number): Promise<Product | null> {
     try {
-      await verifySession()
-      const response = await axios.delete(this.FAKE_STORE_PRODUCTS_URL + `/${id}`)
+      const session = await verifySession()
+      if (!session.isAuth) return null
+
+      const response = await axios.delete(FakeApiService.FAKE_STORE_PRODUCTS_URL + `/${id}`)
       return response.data
     } catch (error) {
       console.error(`Error al eliminar el producto ${id}:`, error)

@@ -1,8 +1,10 @@
 import { FakeApiService } from "@/services/FakeApiService";
 import { ProductCard } from "./components/ProductCard";
+import { redirect } from "next/navigation";
 
 export default async function Products() {
   const products = await FakeApiService.getProducts()
+  if (!products) redirect('/login')
   return (
     <>
       <h1 className="ml-5 text-4xl">{products.length} products found</h1>

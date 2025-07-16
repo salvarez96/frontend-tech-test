@@ -1,3 +1,4 @@
+import { verifySession } from "@/lib/dal"
 import axios from "axios"
 
 interface Product {
@@ -13,6 +14,7 @@ export class FakeApiService {
 
   static async getProducts(): Promise<Product[]> {
     try {
+      await verifySession()
       const response = await axios.get(this.FAKE_STORE_PRODUCTS_URL)
       return response.data
     } catch (error) {
@@ -23,6 +25,7 @@ export class FakeApiService {
 
   static async getProduct(id: number): Promise<Product> {
     try {
+      await verifySession()
       const response = await axios.get(this.FAKE_STORE_PRODUCTS_URL + `/${id}`)
       return response.data as Product
     } catch (error) {
@@ -33,6 +36,7 @@ export class FakeApiService {
 
   static async editProduct(product: Product): Promise<Product> {
     try {
+      await verifySession()
       const response = await axios.post(this.FAKE_STORE_PRODUCTS_URL, product)
       return response.data
     } catch (error) {
@@ -43,6 +47,7 @@ export class FakeApiService {
 
   static async deleteProduct(id: number): Promise<Product> {
     try {
+      await verifySession()
       const response = await axios.delete(this.FAKE_STORE_PRODUCTS_URL + `/${id}`)
       return response.data
     } catch (error) {

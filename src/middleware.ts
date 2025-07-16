@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { decrypt } from '@/lib/session'
+import { Cryptography } from './lib/Cryptography'
 
 const protectedRoutes = ['/products']
 const publicRoutes = ['/login', '/']
@@ -11,7 +11,7 @@ export default async function middleware(req: NextRequest) {
   const isPublicRoute = publicRoutes.some(route => path.startsWith(route))
 
   const cookie = req.cookies.get('session')?.value
-  const session = await decrypt(cookie)
+  const session = await Cryptography.decrypt(cookie)
 
   if (isProtectedRoute && !session?.username) {
     return redirectTo(req, '/login')

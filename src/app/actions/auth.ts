@@ -1,5 +1,7 @@
+'use server'
+
 import { LoginFormSchema, LoginFormState } from "@/lib/definitions";
-import { createSession, deleteSession } from "@/lib/session";
+import { Session } from "@/lib/Session";
 import { redirect } from "next/navigation";
 
 export async function login(state: LoginFormState, formData: FormData) {
@@ -18,12 +20,12 @@ export async function login(state: LoginFormState, formData: FormData) {
 
   const { username } = validatedFields.data
 
-  await createSession(username)
+  await Session.createSession(username)
 
   redirect('/products')
 }
 
 export async function logout() {
-  await deleteSession()
+  await Session.deleteSession()
   redirect('/login')
 }

@@ -1,5 +1,12 @@
 import { verifySession } from "@/lib/dal"
-import { EditProductFormSchema, EditProductFormState, FetchResponse, ProductFormFieldErrors } from "@/lib/definitions"
+import {
+  CreateProductFormSchema,
+  CreateProductFormState,
+  EditProductFormSchema,
+  EditProductFormState,
+  FetchResponse,
+  ProductFormFieldErrors
+} from "@/lib/definitions"
 import axios from "axios"
 
 export interface Product {
@@ -45,12 +52,14 @@ export class FakeApiService {
       const session = await verifySession()
       if (!session.isAuth) return { success: false, message: 'Session expired' }
 
+      const rawImage = formData.get('image')
+
       const validatedFields = EditProductFormSchema.safeParse({
         title: formData.get('title'),
         category: formData.get('category'),
         price: formData.get('price'),
         description: formData.get('description'),
-        image: formData.get('image'),
+        image: rawImage === '' ? undefined : rawImage,
       })
 
       if (!validatedFields.success) {
@@ -69,7 +78,7 @@ export class FakeApiService {
 
       return {
         success: true,
-        message: `Producto ${response.data.title} editado con éxito!`,
+        message: `Producto "${response.data.title}" editado con éxito!`,
         data: response.data
       }
     } catch (error) {
@@ -80,23 +89,25 @@ export class FakeApiService {
       }
     }
   }
-  static async createProduct(state: EditProductFormState, formData: FormData): Promise<FetchResponse<ProductFormFieldErrors, Product>> {
+  static async createProduct(state: CreateProductFormState, formData: FormData): Promise<FetchResponse<ProductFormFieldErrors, Product>> {
     try {
       const session = await verifySession()
       if (!session.isAuth) return { success: false, message: 'Session expired' }
 
-      const validatedFields = EditProductFormSchema.safeParse({
+      const rawImage = formData.get('image')
+
+      const validatedFields = CreateProductFormSchema.safeParse({
         title: formData.get('title'),
         category: formData.get('category'),
         price: formData.get('price'),
         description: formData.get('description'),
-        image: formData.get('image'),
+        image: rawImage === '' ? undefined : rawImage,
       })
 
       if (!validatedFields.success) {
         return {
           success: false,
-          message: 'Validation error',
+          message: 'Error de validación, verificar los datos ingresados',
           errors: validatedFields.error.flatten().fieldErrors
         }
       }
@@ -109,7 +120,7 @@ export class FakeApiService {
 
       return {
         success: true,
-        message: 'Product successfully created',
+        message: `Producto "${response.data.title}" creado con éxito!`,
         data: response.data
       }
     } catch (error) {

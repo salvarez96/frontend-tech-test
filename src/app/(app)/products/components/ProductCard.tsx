@@ -1,12 +1,18 @@
+'use client'
+
 import { Product } from "@/services/FakeApiService";
 import Image from "next/image";
 import Link from "next/link";
 import EditIcon from '@mui/icons-material/Edit';
+import DeleteProductButton from "./DeleteProductButton";
 
 export function ProductCard({ product }: { product: Product }) {
   return (
     <div className="flex flex-col justify-center align-middle w-8/9 max-w-120 mx-auto backdrop-blur-lg bg-gray-400/10 shadow shadow-gray-400/60 sm:px-8 px-5 py-7 rounded-xl">
-      <Link href={`/products/${product.id}`} className="text-end hover:text-blue-400" title="Edit"><EditIcon /></Link>
+      <div className="text-end">
+        <Link href={`/products/${product.id}`} className="hover:text-blue-400 mr-2" title="Editar"><EditIcon /></Link>
+        <DeleteProductButton id={ product.id } />
+      </div>
       <div className="flex flex-col md:flex-row gap-5 my-5">
         <Image
           src={ product.image }

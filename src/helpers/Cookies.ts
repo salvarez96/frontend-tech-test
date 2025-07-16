@@ -9,7 +9,7 @@ export class Cookies {
     protected tokenLifetime: number,
     protected cookie_name: string
   ) {
-    this.COOKIE_LIFETIME = tokenLifetime * 1000
+    this.COOKIE_LIFETIME = tokenLifetime * 60 * 1000
     this.COOKIE_NAME = cookie_name
   }
 

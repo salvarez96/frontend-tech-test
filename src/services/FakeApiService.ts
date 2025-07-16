@@ -1,7 +1,8 @@
 import { verifySession } from "@/lib/dal"
 import axios from "axios"
 
-interface Product {
+export interface Product {
+  id: number
   title: string
   price: number
   description: string
@@ -10,7 +11,7 @@ interface Product {
 }
 
 export class FakeApiService {
-  private static FAKE_STORE_PRODUCTS_URL = process.env.FAKE_STORE_URL + '/products'
+  private static FAKE_STORE_PRODUCTS_URL = process.env.NEXT_PUBLIC_FAKE_STORE_API + '/products'
 
   static async getProducts(): Promise<Product[]> {
     try {

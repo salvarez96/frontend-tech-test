@@ -18,9 +18,31 @@ export type LoginFormState = {
 } | undefined
 
 export const CreateProductFormSchema = z.object({
-  name: z.string().min(3, { message: 'El producto debe tener un nombre de al menos 3 letras' }).trim(),
-  category: z.string().trim(),
-  price: z.number().min(1, { message: 'El precio no puede ser negativo o 0' }),
-  description: z.string().trim(),
-  image: z.url().trim().optional()
+  title: z.string().min(3, { message: 'El producto debe tener un nombre de al menos 3 letras' }).trim(),
+  category: z.string({ message: 'La categoría no puede estar vacía' }).trim(),
+  price: z.coerce.number({ message: 'El precio debe ser un número' }).min(1, { message: 'El precio no puede ser negativo o 0' }),
+  description: z.string({ message: 'La descripción no puede estar vacía' }).trim(),
+  image: z.url().optional()
 })
+
+export const EditProductFormSchema = CreateProductFormSchema
+
+export type ProductFormFieldErrors = {
+  title?: string[]
+  category?: string[],
+  price?: string[],
+  description?: string[],
+  image?: string[]
+}
+
+export type EditProductFormState = {
+  errors?: ProductFormFieldErrors
+  message?: string
+} | undefined
+
+export type FetchResponse<T, E> = {
+  success: boolean,
+  message: string,
+  errors?: T,
+  data?: E
+}

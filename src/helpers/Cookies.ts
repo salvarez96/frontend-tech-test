@@ -13,7 +13,7 @@ export class Cookies {
     this.COOKIE_NAME = cookie_name
   }
 
-  protected async createCookie(value: string) {
+  async createCookie(value: string) {
     const cookieStore = await cookies()
 
     cookieStore.set({
@@ -26,7 +26,7 @@ export class Cookies {
     return true
   }
 
-  protected async deleteCookie() {
+  async deleteCookie() {
     const cookieStore = await cookies()
 
     cookieStore.delete(this.COOKIE_NAME)
@@ -34,11 +34,11 @@ export class Cookies {
     return true
   }
 
-  protected async getCookie() {
+  async getCookie() {
     const cookieStore = await cookies()
 
     if (cookieStore.has(this.COOKIE_NAME)) {
-      return cookieStore.get(this.COOKIE_NAME)
+      return cookieStore.get(this.COOKIE_NAME)?.value
     }
 
     return false

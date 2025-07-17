@@ -1,5 +1,14 @@
 import { z } from "zod"
 
+export interface Product {
+  id: number
+  title: string
+  price: number
+  description: string
+  category: string
+  image: string
+}
+
 export const LoginFormSchema = z.object({
   username: z.email({ message: 'Ingresa un email válido' }).trim(),
   password: z

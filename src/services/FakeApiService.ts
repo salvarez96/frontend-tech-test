@@ -5,18 +5,10 @@ import {
   EditProductFormSchema,
   EditProductFormState,
   FetchResponse,
+  Product,
   ProductFormFieldErrors
 } from "@/lib/definitions"
 import axios from "axios"
-
-export interface Product {
-  id: number
-  title: string
-  price: number
-  description: string
-  category: string
-  image: string
-}
 
 export class FakeApiService {
   private static FAKE_STORE_PRODUCTS_URL = process.env.NEXT_PUBLIC_FAKE_STORE_API + '/products'

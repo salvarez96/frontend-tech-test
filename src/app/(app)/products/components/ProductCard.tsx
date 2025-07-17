@@ -1,6 +1,6 @@
 'use client'
 
-import { Product } from "@/services/FakeApiService";
+import { Product } from "@/lib/definitions";
 import Image from "next/image";
 import Link from "next/link";
 import EditIcon from '@mui/icons-material/Edit';

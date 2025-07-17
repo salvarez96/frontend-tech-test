@@ -1,9 +1,10 @@
 'use client'
 
-import { FakeApiService, Product } from "@/services/FakeApiService";
+import { FakeApiService } from "@/services/FakeApiService";
 import { useActionState, useEffect, useState } from "react";
 import FormErrorMessages from "./FormErrorMessages";
 import { useRouter } from "next/navigation";
+import { Product } from "@/lib/definitions";
 
 const labelClassNames = 'text-xl'
 const infoOrganizer = 'flex flex-col md:mx-5 mx-0'

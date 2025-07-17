@@ -23,7 +23,7 @@ export async function login(state: LoginFormState, formData: FormData) {
 
   const { username, password } = validatedFields.data
 
-  if (username !== VALID_USERNAME && password !== VALID_PASSWORD) {
+  if (username !== VALID_USERNAME || password !== VALID_PASSWORD) {
     return {
       success: false,
       message: 'Invalid username and password',

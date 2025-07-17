@@ -6,7 +6,7 @@ const createJestConfig = nextJest({
 })
 
 const config: Config = {
-  coverageProvider: 'babel',
+  coverageProvider: 'v8',
   testEnvironment: 'jsdom',
   moduleNameMapper: {
     "@/(.*)$": ["<rootDir>/src/$1"],
